@@ -1,87 +1,72 @@
-import { useEffect, useRef, useState } from "react";
-import "./Map.css";
 
-function Map() {
-  const mapsRef = useRef();
+import React, { useRef, useEffect, useState } from "react";
+import mapboxgl from "mapbox-gl";
 
-  const [mapInitialized, setMapInitialized] = useState(false);
+import "./MapStyles.css";
 
-  useEffect(() => {
-    if (window?.google == null) return;
+mapboxgl.accessToken = "pk.eyJ1Ijoia3J1c2hpdGEzMDEwIiwiYSI6ImNrb3NmOTBjYjAwdHoyd28ycWs5dTkxczAifQ.j_JE2dJuhMAwDQA4FAjoOg";
 
-    if (!mapInitialized) {
-      console.log("inside init");
-      initMap();
-      setMapInitialized(true);
-    }
+const Map = () => {
 
-    return () => {};
-  }, [window.google, mapInitialized]);
+  const mapContainerRef = useRef(null);
+  const [longitude, setLongitude] = useState(0);
+  const [latitude, setLatitude] = useState(0);
+  const [zoom, setZoom] = useState(5);
 
-  const initMap = () => {
-    let directionService = new window.google.maps.DirectionsService();
-    let directionRenderer = new window.google.maps.DirectionsRenderer();
 
-    let map;
+navigator.geolocation.getCurrentPosition(successPosition, errorPosition, {
+    enableHighAccuracy: true,
+  });
 
-    map = new window.google.maps.Map(document.getElementById("map"), {
-      center: { lat: 23.0774941, lng: 72.5935369 },
-      zoom: 8,
-    });
+    function successPosition(position) {
+    setLongitude(position.coords.longitude)
+        setLatitude(position.coords.latitude)
+        console.log("got current location")
+  }
+  
+  function errorPosition() {
+    setLongitude(12.9716)
+    setLatitude(77.5946)
+  }
 
-    directionRenderer.setMap(map);
-    directionRenderer.setPanel(document.getElementById("directionPanel"));
+    useEffect(() => {
+        const map = new mapboxgl.Map({
+            container: mapContainerRef.current,
+            style: "mapbox://styles/mapbox/streets-v11",
+            center: [longitude, latitude],
+            zoom: zoom,
+        });
 
-    setTimeout(() => {
-      calcDistance(directionService, directionRenderer);
-    }, 2000);
-  };
+        map.addControl(new mapboxgl.NavigationControl(), "top-right");
 
-  const calcDistance = (directionsService, directionsRenderer) => {
-    const start = "chicago, il";
-    const end = "los angeles, ca";
+        map.on("move", () => {
+            setLongitude(map.getCenter().longitude);
+            setLatitude(map.getCenter().latitude);
+            setZoom(map.getZoom().toFixed(2));
+        });
+        const directions = new MapboxDirections({
+  accessToken: mapboxgl.accessToken,
+  unit: 'metric',
+  profile: 'mapbox/cycling'
+        });
+        
+        map.addControl(directions, 'top-left');
 
-    directionsService.route(
-      {
-        origin: start,
-        destination: end,
-        travelMode: window.google.maps.TravelMode.DRIVING,
-      },
-      (response, status) => {
-        if (status === "OK") {
-          directionsRenderer.setDirections(response);
-        } else {
-          window.alert("Directions request failed due to " + status);
-        }
-      }
-    );
-  };
+
+
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  
 
   return (
-    <div className="App">
-      <div
-        className="maps-container"
-        id="map"
-        ref={mapsRef}
-        style={{
-          float: "left",
-          height: "100vh",
-          width: "70vw",
-          position: "relative",
-        }}
-      ></div>
-      <div
-        className="directions-container"
-        id="directionPanel"
-        style={{
-          float: "right",
-          height: "100vh",
-          width: "30vw",
-          position: "absolute",
-        }}
-      ></div>
+      <div>
+          <script
+    src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.js"></script>
+  <link rel="stylesheet"
+    href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.css"
+    type="text/css"></link>
+      <div className="map__container" ref={mapContainerRef} />
     </div>
   );
-}
+};
 
 export default Map;
