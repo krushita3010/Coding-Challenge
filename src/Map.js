@@ -1,4 +1,3 @@
-
 import React, { useRef, useEffect, useState } from "react";
 import mapboxgl from "mapbox-gl";
 
@@ -44,13 +43,13 @@ navigator.geolocation.getCurrentPosition(successPosition, errorPosition, {
             setLatitude(map.getCenter().latitude);
             setZoom(map.getZoom().toFixed(2));
         });
-        const directions = new MapboxDirections({
-  accessToken: mapboxgl.accessToken,
-  unit: 'metric',
-  profile: 'mapbox/cycling'
-        });
+  //       const directions = new MapboxDirections({
+  // accessToken: mapboxgl.accessToken,
+  // unit: 'metric',
+  // profile: 'mapbox/cycling'
+  //       });
         
-        map.addControl(directions, 'top-left');
+  //       map.addControl(directions, 'top-left');
 
 
 
@@ -59,11 +58,6 @@ navigator.geolocation.getCurrentPosition(successPosition, errorPosition, {
 
   return (
       <div>
-          <script
-    src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.js"></script>
-  <link rel="stylesheet"
-    href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.css"
-    type="text/css"></link>
       <div className="map__container" ref={mapContainerRef} />
     </div>
   );
