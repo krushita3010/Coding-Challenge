@@ -1,12 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
-import Dictaphone from "./Dictaphone";
-import Bongo from "./Bongo";
+import Routes from "./Routes";
 
 ReactDOM.render(
   <React.StrictMode>
-    <Bongo />
+    <Routes />
   </React.StrictMode>,
   document.getElementById("app")
 );
