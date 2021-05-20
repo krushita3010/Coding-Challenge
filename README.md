@@ -1,5 +1,9 @@
 CODING CHALLENGE
 
+Task 1 : Google Maps Clone - (GoogleMaps.js , Map.js)
+Task 2 : Speech to text conversion - (Dictaphone.js)
+Task 3 : bongo.cat clone - (Bongo.js)
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
